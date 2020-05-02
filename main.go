@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-const indexTemplatePath string = "../templates/index.html"
+const indexTemplatePath string = "./templates/index.html"
 
 var indexTemplateText []byte
 
@@ -18,6 +18,8 @@ func index(res http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+	fmt.Println("running server")
+
 	file, err := os.Open(indexTemplatePath)
 	if err != nil {
 		log.Fatal(err)
@@ -31,7 +33,7 @@ func main() {
 	http.HandleFunc("/", index)
 
 	server := &http.Server{
-		Addr:           ":" + os.Args[1],
+		Addr:           ":80",
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
