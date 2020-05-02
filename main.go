@@ -33,7 +33,7 @@ func main() {
 	http.HandleFunc("/", index)
 
 	server := &http.Server{
-		Addr:           ":80",
+		Addr:           ":1234",
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,

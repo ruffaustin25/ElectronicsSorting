@@ -8,6 +8,6 @@ COPY . .
 
 RUN go build -o main main.go
 
-EXPOSE 80
+EXPOSE 1234
 
 CMD ["./main"]
