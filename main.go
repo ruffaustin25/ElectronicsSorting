@@ -1,36 +1,31 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"time"
+
+	"github.com/ruffaustin25/HouseManagement/examplepage"
+	"github.com/ruffaustin25/HouseManagement/index"
+	"github.com/ruffaustin25/HouseManagement/quotes"
+	"github.com/ruffaustin25/HouseManagement/services"
 )
 
-const indexTemplatePath string = "./templates/index.html"
-
-var indexTemplateText []byte
-
-func index(res http.ResponseWriter, req *http.Request) {
-	fmt.Fprint(res, string(indexTemplateText))
-}
+const layoutPath string = "./templates/layout.html"
 
 func main() {
-	fmt.Println("running server")
+	staticFS := http.FileServer(http.Dir("./static"))
 
-	file, err := os.Open(indexTemplatePath)
-	if err != nil {
-		log.Fatal(err)
-	}
+	index.Init(layoutPath)
+	quotes.Init(layoutPath)
+	examplepage.Init(layoutPath)
+	services.Init(layoutPath)
 
-	indexTemplateText, err = ioutil.ReadAll(file)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	http.HandleFunc("/", index)
+	http.HandleFunc("/", index.Show)
+	http.HandleFunc("/quotes/", quotes.Show)
+	http.HandleFunc("/services/", services.Show)
+	http.HandleFunc("/examplepage/", examplepage.Show)
+	http.Handle("/static/", http.StripPrefix("/static", staticFS))
 
 	server := &http.Server{
 		Addr:           ":1234",

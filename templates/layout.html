@@ -1,0 +1,34 @@
+{{define "header"}}
+<div class="pure-menu pure-menu-horizontal">
+    <a href="/" class="pure-menu-heading pure-menu-link">
+        House Webpage
+    </a>
+    <ul class="pure-menu-list">
+        <li class="pure-menu-item">
+            <a href="/services" class="pure-menu-link">
+                Services
+            </a>
+        </li>
+        <li class="pure-menu-item">
+            <a href="/quotes" class="pure-menu-link">
+                Quotes
+            </a>
+        </li>
+    </ul>
+</div>
+{{end}}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>House Webpage</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link type="text/css" rel="stylesheet" href="/static/css/style.css">
+        <link type="text/css" rel="stylesheet" href="/static/css/pure-min.css">
+    </head>
+    <body>
+        {{template "header"}}
+        {{template "body"}}
+    </body>
+</html>
