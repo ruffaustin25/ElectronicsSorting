@@ -1,6 +1,6 @@
 FROM golang:1.14.2-buster
 
-WORKDIR /go/src/github.com/ruffaustin25/HouseManagement
+WORKDIR /go/src/github.com/ruffaustin25/ElectronicsSorting
 COPY . .
 
 # RUN go get -d -v ./...
@@ -8,6 +8,6 @@ COPY . .
 
 RUN go build -o main main.go
 
-EXPOSE 1234
+EXPOSE 2796
 
 CMD ["./main"]

@@ -1,2 +1,2 @@
-docker build -t house-management .
-docker run -it -p 1234:1234 --rm --name run-house-management house-management
+docker build -t electronics-sorting .
+docker run -it -p 2796:2796 --rm --name run-electronics-sorting electronics-sorting
