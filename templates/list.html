@@ -1,0 +1,19 @@
+{{define "body"}}
+<table class='pure-table'>
+    <thead>
+        <tr>
+            <th>Part Name</th>
+            <th>Container</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range .Parts}}
+        <tr>
+            <th>{{.Name}}</th>
+            <th>{{.Container}}</th>
+        </tr>
+        {{end}}
+    </tbody>
+    {{.StrTest}}
+</table>
+{{end}}
