@@ -1,5 +1,5 @@
 {{define "body"}}
-<table class='pure-table'>
+<table class="pure-table">
     <thead>
         <tr>
             <th>Part Name</th>
@@ -7,13 +7,16 @@
         </tr>
     </thead>
     <tbody>
-        {{range .Parts}}
+    {{range $index, $element := .Parts}}
+        {{if IsEven $index}}
+        <tr class="pure-table-odd">
+        {{else}}
         <tr>
-            <th>{{.Name}}</th>
-            <th>{{.Container}}</th>
-        </tr>
         {{end}}
+            <td>{{$element.Name}}</td>
+            <td>{{$element.Container}}</td>
+        </tr>
+    {{end}}
     </tbody>
-    {{.StrTest}}
 </table>
 {{end}}
