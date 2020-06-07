@@ -9,7 +9,7 @@ import (
 type viewData struct {
 }
 
-const templatePath string = "./templates/index.html"
+const templatePath string = "./templates/index.gohtml"
 
 var compiledTemplate *template.Template
 

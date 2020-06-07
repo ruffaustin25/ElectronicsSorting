@@ -1,13 +1,12 @@
-package part
+package label
 
 import (
-	"html/template"
 	"log"
 	"net/http"
-	"path/filepath"
+	"text/template"
 
-	"github.com/ruffaustin25/ElectronicsSorting/common"
 	"github.com/ruffaustin25/ElectronicsSorting/partdata"
+
 	"github.com/ruffaustin25/ElectronicsSorting/partsdatabase"
 )
 
@@ -15,25 +14,24 @@ type viewData struct {
 	Part partdata.PartData
 }
 
-const templatePath string = "./templates/part.gohtml"
+const templatePath string = "./label/labelTemplate.dymo"
 const partParam string = "part"
 
 var compiledTemplate *template.Template
 var database *partsdatabase.PartsDatabase
 
 // Init : Load page template
-func Init(layoutPath string, db *partsdatabase.PartsDatabase) {
+func Init(db *partsdatabase.PartsDatabase) {
 	var err error
-	layoutBase := filepath.Base(layoutPath)
-	compiledTemplate, err = template.New(layoutBase).Funcs(common.GetCommonFuncMap()).ParseFiles(layoutPath, templatePath)
+	compiledTemplate, err = template.ParseFiles(templatePath)
 	if err != nil {
-		log.Fatalf("Could not load layout %s or template %s", layoutPath, templatePath)
+		log.Fatalf("Could not load template %s", templatePath)
 	}
 	database = db
 }
 
-// Show : Present the page
-func Show(res http.ResponseWriter, req *http.Request) {
+// Download : get the file
+func Download(res http.ResponseWriter, req *http.Request) {
 	params := req.URL.Query()
 
 	partValue := params[partParam]
@@ -53,6 +51,6 @@ func Show(res http.ResponseWriter, req *http.Request) {
 
 	err := compiledTemplate.Execute(res, data)
 	if err != nil {
-		log.Fatalf("Could not execute template in part.go, Error %s", err.Error())
+		log.Fatalf("Could not execute template in label.go, Error %s", err.Error())
 	}
 }

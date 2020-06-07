@@ -15,7 +15,7 @@ type viewData struct {
 	Parts []partdata.PartData
 }
 
-const templatePath string = "./templates/list.html"
+const templatePath string = "./templates/list.gohtml"
 
 var compiledTemplate *template.Template
 var database *partsdatabase.PartsDatabase
