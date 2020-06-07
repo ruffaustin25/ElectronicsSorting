@@ -7,6 +7,7 @@ import (
 
 	"github.com/ruffaustin25/ElectronicsSorting/index"
 	"github.com/ruffaustin25/ElectronicsSorting/list"
+	"github.com/ruffaustin25/ElectronicsSorting/partsdatabase"
 )
 
 const layoutPath string = "./templates/layout.html"
@@ -14,8 +15,10 @@ const layoutPath string = "./templates/layout.html"
 func main() {
 	staticFS := http.FileServer(http.Dir("./static"))
 
+	db := partsdatabase.NewPartsDatabase()
+
 	index.Init(layoutPath)
-	list.Init(layoutPath)
+	list.Init(layoutPath, db)
 
 	http.HandleFunc("/", index.Show)
 	http.HandleFunc("/list", list.Show)
