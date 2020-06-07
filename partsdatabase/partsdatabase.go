@@ -11,7 +11,7 @@ import (
 
 // PartsDatabase :
 type PartsDatabase struct {
-	Records [][]string
+	Parts []partdata.PartData
 }
 
 const dbFilePath string = "./partsDatabase/parts.csv"
@@ -33,17 +33,21 @@ func NewPartsDatabase() *PartsDatabase {
 	if len(dbRecords) == 0 {
 		log.Fatal("No lines in csv database")
 	}
-	db.Records = dbRecords[1:len(dbRecords)]
+
+	db.Parts = []partdata.PartData{}
+	for i := 1; i < len(dbRecords); i++ {
+		part := partdata.NewPartData(dbRecords[i])
+		db.Parts = append(db.Parts, *part)
+	}
 	return &db
 }
 
-// GetPartsList : Gets a list of parts in the database
-func (db PartsDatabase) GetPartsList() []partdata.PartData {
-	partsList := []partdata.PartData{}
-
-	for i := 0; i < len(db.Records); i++ {
-		part := partdata.NewPartData(db.Records[i])
-		partsList = append(partsList, *part)
+// GetPart : Gets the part with the corresponding url-friendly key name
+func (db PartsDatabase) GetPart(key string) *partdata.PartData {
+	for _, part := range db.Parts {
+		if part.Key == key {
+			return &part
+		}
 	}
-	return partsList
+	return nil
 }

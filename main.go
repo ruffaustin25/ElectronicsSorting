@@ -7,6 +7,7 @@ import (
 
 	"github.com/ruffaustin25/ElectronicsSorting/index"
 	"github.com/ruffaustin25/ElectronicsSorting/list"
+	"github.com/ruffaustin25/ElectronicsSorting/part"
 	"github.com/ruffaustin25/ElectronicsSorting/partsdatabase"
 )
 
@@ -19,9 +20,11 @@ func main() {
 
 	index.Init(layoutPath)
 	list.Init(layoutPath, db)
+	part.Init(layoutPath, db)
 
 	http.HandleFunc("/", index.Show)
 	http.HandleFunc("/list", list.Show)
+	http.HandleFunc("/part", part.Show)
 	http.Handle("/static/", http.StripPrefix("/static", staticFS))
 
 	server := &http.Server{

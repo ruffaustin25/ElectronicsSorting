@@ -1,4 +1,4 @@
-package list
+package part
 
 import (
 	"html/template"
@@ -12,10 +12,11 @@ import (
 )
 
 type viewData struct {
-	Parts []partdata.PartData
+	Part partdata.PartData
 }
 
-const templatePath string = "./templates/list.html"
+const templatePath string = "./templates/part.html"
+const partParam string = "part"
 
 var compiledTemplate *template.Template
 var database *partsdatabase.PartsDatabase
@@ -33,11 +34,25 @@ func Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 
 // Show : Present the page
 func Show(res http.ResponseWriter, req *http.Request) {
-	data := viewData{
-		Parts: database.Parts,
+	params := req.URL.Query()
+
+	partValue := params[partParam]
+	if len(partValue) == 0 {
+		log.Print("No part value sent as get query")
+		return
 	}
+
+	part := database.GetPart(partValue[0])
+	if part == nil {
+		log.Printf("No part found for %s", partValue)
+		return
+	}
+	data := viewData{
+		Part: *part,
+	}
+
 	err := compiledTemplate.Execute(res, data)
 	if err != nil {
-		log.Fatalf("Could not execute template in list.go, Error %s", err.Error())
+		log.Fatalf("Could not execute template in part.go, Error %s", err.Error())
 	}
 }
