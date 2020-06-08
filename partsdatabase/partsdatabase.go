@@ -14,7 +14,7 @@ type PartsDatabase struct {
 	Parts []partdata.PartData
 }
 
-const dbFilePath string = "./partsDatabase/parts.csv"
+const dbFilePath string = "./partsdatabase/parts.csv"
 
 // NewPartsDatabase :
 func NewPartsDatabase() *PartsDatabase {
