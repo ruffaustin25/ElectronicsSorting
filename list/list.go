@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/ruffaustin25/ElectronicsSorting/common"
 	"github.com/ruffaustin25/ElectronicsSorting/partdata"
 	"github.com/ruffaustin25/ElectronicsSorting/partsdatabase"
+	"github.com/ruffaustin25/ElectronicsSorting/templatefunctions"
 )
 
 type viewData struct {
@@ -24,7 +24,7 @@ var database *partsdatabase.PartsDatabase
 func Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 	var err error
 	layoutBase := filepath.Base(layoutPath)
-	compiledTemplate, err = template.New(layoutBase).Funcs(common.GetHtmlFuncMap()).ParseFiles(layoutPath, templatePath)
+	compiledTemplate, err = template.New(layoutBase).Funcs(templatefunctions.GetHtmlFuncMap()).ParseFiles(layoutPath, templatePath)
 	if err != nil {
 		log.Fatalf("Could not load layout %s or template %s", layoutPath, templatePath)
 	}

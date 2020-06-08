@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"text/template"
 
-	common "github.com/ruffaustin25/ElectronicsSorting/common"
 	"github.com/ruffaustin25/ElectronicsSorting/partdata"
+	"github.com/ruffaustin25/ElectronicsSorting/templatefunctions"
 
 	"github.com/ruffaustin25/ElectronicsSorting/partsdatabase"
 )
@@ -26,7 +26,7 @@ var database *partsdatabase.PartsDatabase
 func Init(db *partsdatabase.PartsDatabase) {
 	var err error
 	templateBase := filepath.Base(templatePath)
-	compiledTemplate, err = template.New(templateBase).Funcs(common.GetTextFuncMap()).ParseFiles(templatePath)
+	compiledTemplate, err = template.New(templateBase).Funcs(templatefunctions.GetTextFuncMap()).ParseFiles(templatePath)
 	if err != nil {
 		log.Fatalf("Could not load template %s, Error: %s", templatePath, err.Error())
 	}

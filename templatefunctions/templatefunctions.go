@@ -1,4 +1,4 @@
-package common
+package templatefunctions
 
 import (
 	htmlTemplate "html/template"
