@@ -172,7 +172,7 @@
               </SolidColorBrush>
             </FillBrush>
           </Brushes>
-          <Rotation>Rotation0</Rotation>
+          <Rotation>Rotation270</Rotation>
           <OutlineThickness>1</OutlineThickness>
           <IsOutlined>True</IsOutlined>
           <BorderStyle>SolidLine</BorderStyle>
@@ -182,15 +182,15 @@
           <HorizontalAlignment>Center</HorizontalAlignment>
           <VerticalAlignment>Bottom</VerticalAlignment>
           <FitMode>None</FitMode>
-          <IsVertical>True</IsVertical>
+          <IsVertical>False</IsVertical>
           <FormattedText>
             <FitMode>None</FitMode>
             <HorizontalAlignment>Center</HorizontalAlignment>
             <VerticalAlignment>Bottom</VerticalAlignment>
-            <IsVertical>True</IsVertical>
+            <IsVertical>False</IsVertical>
             <LineTextSpan>
               <TextSpan>
-                <Text>{{.Part.Container}}</Text>
+                <Text>{{FormatPosition .Part.Row .Part.Column .Part.Depth}}</Text>
                 <FontInfo>
                   <FontName>Arial</FontName>
                   <FontSize>20</FontSize>

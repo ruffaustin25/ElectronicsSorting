@@ -25,7 +25,7 @@ var database *partsdatabase.PartsDatabase
 func Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 	var err error
 	layoutBase := filepath.Base(layoutPath)
-	compiledTemplate, err = template.New(layoutBase).Funcs(common.GetCommonFuncMap()).ParseFiles(layoutPath, templatePath)
+	compiledTemplate, err = template.New(layoutBase).Funcs(common.GetHtmlFuncMap()).ParseFiles(layoutPath, templatePath)
 	if err != nil {
 		log.Fatalf("Could not load layout %s or template %s", layoutPath, templatePath)
 	}

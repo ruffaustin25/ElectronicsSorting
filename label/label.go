@@ -3,8 +3,10 @@ package label
 import (
 	"log"
 	"net/http"
+	"path/filepath"
 	"text/template"
 
+	common "github.com/ruffaustin25/ElectronicsSorting/common"
 	"github.com/ruffaustin25/ElectronicsSorting/partdata"
 
 	"github.com/ruffaustin25/ElectronicsSorting/partsdatabase"
@@ -23,9 +25,10 @@ var database *partsdatabase.PartsDatabase
 // Init : Load page template
 func Init(db *partsdatabase.PartsDatabase) {
 	var err error
-	compiledTemplate, err = template.ParseFiles(templatePath)
+	templateBase := filepath.Base(templatePath)
+	compiledTemplate, err = template.New(templateBase).Funcs(common.GetTextFuncMap()).ParseFiles(templatePath)
 	if err != nil {
-		log.Fatalf("Could not load template %s", templatePath)
+		log.Fatalf("Could not load template %s, Error: %s", templatePath, err.Error())
 	}
 	database = db
 }
