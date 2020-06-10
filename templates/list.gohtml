@@ -16,7 +16,8 @@
         {{else}}
         <tr>
         {{end}}
-            <td><a href={{$element.URL}}>{{$element.Name}}</a></td>
+            <td>{{$element.Name}}</td>
+            {{/* <td><a href={{$element.URL}}>{{$element.Name}}</a></td> */}}
             <td>{{$element.Container}}</td>
             <td>{{FormatPosition $element.Row $element.Column $element.Depth}}</td>
             <td><a class="pure-button" href={{print "/label?part=" $element.Key}} download={{print $element.Key ".dymo"}}>Download Label</a></td>

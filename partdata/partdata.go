@@ -1,6 +1,7 @@
 package partdata
 
 import (
+	"database/sql"
 	"log"
 	"strconv"
 
@@ -15,7 +16,6 @@ type PartData struct {
 	Row       int
 	Column    int
 	Depth     int
-	URL       string
 }
 
 // Serialize : converts a part data to a string slice
@@ -59,6 +59,18 @@ func NewPartData(record []string) *PartData {
 	}
 	data.Depth = depthNum
 
-	data.URL = buildconfig.BaseURL + "/part?part=" + data.Key
 	return &data
+}
+
+func FromDatabaseRow(rows *sql.Rows) *PartData {
+	data := PartData{}
+	err := rows.Scan(&data.Key, &data.Name, &data.Container, &data.Row, &data.Column, &data.Depth)
+	if err != nil {
+		return nil
+	}
+	return &data
+}
+
+func (data PartData) GetURL() string {
+	return buildconfig.BaseURL + "/part?part=" + data.Key
 }

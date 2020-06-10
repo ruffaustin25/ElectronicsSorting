@@ -34,7 +34,7 @@ func Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 // Show : Present the page
 func Show(res http.ResponseWriter, req *http.Request) {
 	data := viewData{
-		Parts: database.Parts,
+		Parts: database.GetPartsList(),
 	}
 	err := compiledTemplate.Execute(res, data)
 	if err != nil {

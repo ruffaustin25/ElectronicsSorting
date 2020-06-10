@@ -1,53 +1,74 @@
 package partsdatabase
 
 import (
-	"bufio"
-	"encoding/csv"
+	"context"
 	"log"
-	"os"
+	"time"
 
+	"database/sql"
+
+	// Driver does not need import
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/ruffaustin25/ElectronicsSorting/partdata"
 )
 
 // PartsDatabase :
 type PartsDatabase struct {
-	Parts []partdata.PartData
+	db *sql.DB
 }
 
 const dbFilePath string = "./partsdatabase/parts.csv"
+const user string = "root"
+const password string = "root"
 
 // NewPartsDatabase :
 func NewPartsDatabase() *PartsDatabase {
-	file, err := os.Open(dbFilePath)
+	var err error
+	parts := PartsDatabase{}
+
+	parts.db, err = sql.Open("mysql", user+":"+password+"@/electronics")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Could not init SQL Database, %s", err)
 	}
 
-	db := PartsDatabase{}
+	ctx, stop := context.WithCancel(context.Background())
+	defer stop()
 
-	reader := csv.NewReader(bufio.NewReader(file))
-	dbRecords, err := reader.ReadAll()
+	err = parts.db.PingContext(ctx)
 	if err != nil {
-		log.Fatal(err)
-	}
-	if len(dbRecords) == 0 {
-		log.Fatal("No lines in csv database")
+		log.Fatalf("Could not ping SQL Database, %s", err)
 	}
 
-	db.Parts = []partdata.PartData{}
-	for i := 1; i < len(dbRecords); i++ {
-		part := partdata.NewPartData(dbRecords[i])
-		db.Parts = append(db.Parts, *part)
+	return &parts
+}
+
+// GetPartsList : Gets all parts in the database
+func (db PartsDatabase) GetPartsList() []partdata.PartData {
+	ctx, stop := context.WithTimeout(context.Background(), time.Second)
+	defer stop()
+
+	rows, err := db.db.QueryContext(ctx, "SELECT * FROM part")
+	if err != nil {
+		log.Fatalf("Error on get parts, %s", err)
 	}
-	return &db
+
+	parts := []partdata.PartData{}
+
+	for rows.Next() {
+		parts = append(parts, *partdata.FromDatabaseRow(rows))
+	}
+	return parts
 }
 
 // GetPart : Gets the part with the corresponding url-friendly key name
 func (db PartsDatabase) GetPart(key string) *partdata.PartData {
-	for _, part := range db.Parts {
-		if part.Key == key {
-			return &part
-		}
+	ctx, stop := context.WithTimeout(context.Background(), time.Second)
+	defer stop()
+
+	rows, err := db.db.QueryContext(ctx, "SELECT * FROM part WHERE `key`='"+key+"'")
+	if err != nil {
+		log.Fatalf("Error on get parts, %s", err)
 	}
-	return nil
+	rows.Next()
+	return partdata.FromDatabaseRow(rows)
 }
