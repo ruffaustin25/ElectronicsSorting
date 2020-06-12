@@ -17,7 +17,7 @@ type viewData struct {
 }
 
 const templatePath string = "./label/labelTemplate.dymo"
-const partParam string = "part"
+const keyParam string = "key"
 
 var compiledTemplate *template.Template
 var database *partsdatabase.PartsDatabase
@@ -37,15 +37,15 @@ func Init(db *partsdatabase.PartsDatabase) {
 func Download(res http.ResponseWriter, req *http.Request) {
 	params := req.URL.Query()
 
-	partValue := params[partParam]
-	if len(partValue) == 0 {
+	keys := params[keyParam]
+	if len(keys) == 0 {
 		log.Print("No part value sent as get query")
 		return
 	}
 
-	part := database.GetPart(partValue[0])
+	part := database.GetPart(keys[0])
 	if part == nil {
-		log.Printf("No part found for %s", partValue)
+		log.Printf("No part found for %s", keys[0])
 		return
 	}
 	data := viewData{

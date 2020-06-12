@@ -10,54 +10,55 @@ import (
 
 // PartData : template data describing a part
 type PartData struct {
-	Name      string
-	Key       string
-	Container string
-	Row       int
-	Column    int
-	Depth     int
-}
-
-// Serialize : converts a part data to a string slice
-func (data PartData) Serialize() []string {
-	record := []string{}
-	record = append(record, data.Name)
-	record = append(record, data.Key)
-	record = append(record, data.Container)
-	record = append(record, strconv.Itoa(data.Row))
-	record = append(record, strconv.Itoa(data.Column))
-	record = append(record, strconv.Itoa(data.Depth))
-	return record
+	Key       sql.NullString
+	Name      sql.NullString
+	Container sql.NullString
+	Row       sql.NullInt32
+	Column    sql.NullInt32
+	Depth     sql.NullInt32
 }
 
 // NewPartData : populates a part data based on a string slice
 func NewPartData(record []string) *PartData {
 	data := PartData{}
-	fieldCount := 6 // Number of serialized fields
-	if len(record) != fieldCount {
+	requiredFieldCount := 2 // Number of required serialized fields
+	if len(record) < requiredFieldCount {
 		log.Printf("Not enough fields in PartData record")
 	}
-	data.Name = record[0]
-	data.Key = record[1]
-	data.Container = record[2]
+	data.Key = sql.NullString{String: record[0], Valid: true}
+	data.Name = sql.NullString{String: record[1], Valid: true}
 
+	if len(record) < 3 {
+		return &data
+	}
+	data.Container = sql.NullString{String: record[2], Valid: true}
+
+	if len(record) < 4 {
+		return &data
+	}
 	rowNum, err := strconv.Atoi(record[3])
 	if err != nil {
 		rowNum = 0
 	}
-	data.Row = rowNum
+	data.Row = sql.NullInt32{Int32: int32(rowNum), Valid: true}
 
+	if len(record) < 5 {
+		return &data
+	}
 	colNum, err := strconv.Atoi(record[4])
 	if err != nil {
 		colNum = 0
 	}
-	data.Column = colNum
+	data.Column = sql.NullInt32{Int32: int32(colNum), Valid: true}
 
+	if len(record) < 6 {
+		return &data
+	}
 	depthNum, err := strconv.Atoi(record[5])
 	if err != nil {
 		depthNum = 0
 	}
-	data.Depth = depthNum
+	data.Depth = sql.NullInt32{Int32: int32(depthNum), Valid: true}
 
 	return &data
 }
@@ -72,5 +73,5 @@ func FromDatabaseRow(rows *sql.Rows) *PartData {
 }
 
 func (data PartData) GetURL() string {
-	return buildconfig.BaseURL + "/part?part=" + data.Key
+	return buildconfig.BaseURL + "/part?part=" + data.Key.String
 }

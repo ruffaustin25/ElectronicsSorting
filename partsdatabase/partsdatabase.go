@@ -47,7 +47,8 @@ func (db PartsDatabase) GetPartsList() []partdata.PartData {
 	ctx, stop := context.WithTimeout(context.Background(), time.Second)
 	defer stop()
 
-	rows, err := db.db.QueryContext(ctx, "SELECT * FROM part")
+	rows, err := db.db.QueryContext(ctx, "SELECT * FROM parts")
+	defer rows.Close()
 	if err != nil {
 		log.Fatalf("Error on get parts, %s", err)
 	}
@@ -55,7 +56,11 @@ func (db PartsDatabase) GetPartsList() []partdata.PartData {
 	parts := []partdata.PartData{}
 
 	for rows.Next() {
-		parts = append(parts, *partdata.FromDatabaseRow(rows))
+		part := partdata.FromDatabaseRow(rows)
+		if part == nil {
+			break
+		}
+		parts = append(parts, *part)
 	}
 	return parts
 }
@@ -65,10 +70,41 @@ func (db PartsDatabase) GetPart(key string) *partdata.PartData {
 	ctx, stop := context.WithTimeout(context.Background(), time.Second)
 	defer stop()
 
-	rows, err := db.db.QueryContext(ctx, "SELECT * FROM part WHERE `key`='"+key+"'")
+	rows, err := db.db.QueryContext(ctx, "SELECT * FROM parts WHERE `key`='"+key+"'")
+	defer rows.Close()
 	if err != nil {
 		log.Fatalf("Error on get parts, %s", err)
 	}
-	rows.Next()
+	if !rows.Next() {
+		return nil
+	}
 	return partdata.FromDatabaseRow(rows)
+}
+
+// CreatePart : Initializes a new part description
+func (db PartsDatabase) CreatePart(key string, name string) {
+	ctx, stop := context.WithTimeout(context.Background(), time.Second)
+	defer stop()
+
+	rows, err := db.db.QueryContext(ctx, "INSERT INTO parts (`key`, `name`) VALUES ('"+key+"', '"+name+"')")
+	if rows != nil {
+		rows.Close()
+	}
+	if err != nil {
+		log.Fatalf("Error on create part, %s", err)
+	}
+}
+
+// ArchivePart : Drops a part from the parts table (TODO: move to an archived parts table to make parts recoverable)
+func (db PartsDatabase) ArchivePart(key string) {
+	ctx, stop := context.WithTimeout(context.Background(), time.Second)
+	defer stop()
+
+	rows, err := db.db.QueryContext(ctx, "DELETE FROM parts WHERE `key`='"+key+"'")
+	if rows != nil {
+		rows.Close()
+	}
+	if err != nil {
+		log.Fatalf("Error on create part, %s", err)
+	}
 }

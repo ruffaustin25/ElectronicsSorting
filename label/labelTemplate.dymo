@@ -68,7 +68,7 @@
             <IsVertical>False</IsVertical>
             <LineTextSpan>
               <TextSpan>
-                <Text>{{.Part.Name}}</Text>
+                <Text>{{.Part.Name.String}}</Text>
                 <FontInfo>
                   <FontName>Calibri</FontName>
                   <FontSize>12</FontSize>
@@ -128,14 +128,14 @@
           </Margin>
           <BarcodeFormat>QRCode</BarcodeFormat>
           <Data>
-            <DataString>{{.Part.URL}}</DataString>
+            <DataString>{{formatURL .Part.Key.String}}</DataString>
           </Data>
           <HorizontalAlignment>Center</HorizontalAlignment>
           <VerticalAlignment>Middle</VerticalAlignment>
           <Size>AutoFit</Size>
           <EQRCodeType>QRCodeText</EQRCodeType>
           <TextDataHolder>
-            <Value>{{.Part.URL}}</Value>
+            <Value>{{formatURL .Part.Key.String}}</Value>
           </TextDataHolder>
           <ObjectLayout>
             <DYMOPoint>
@@ -190,7 +190,11 @@
             <IsVertical>False</IsVertical>
             <LineTextSpan>
               <TextSpan>
-                <Text>{{FormatPosition .Part.Row .Part.Column .Part.Depth}}</Text>
+                {{if and .Part.Row.Valid .Part.Column.Valid .Part.Depth.Valid}}
+                <Text>{{formatPosition .Part.Row.Int32 .Part.Column.Int32 .Part.Depth.Int32}}</Text>
+                {{else}}
+                <Text></Text>
+                {{end}}
                 <FontInfo>
                   <FontName>Arial</FontName>
                   <FontSize>20</FontSize>

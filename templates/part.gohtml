@@ -1,4 +1,7 @@
 {{define "body"}}
-<h1>{{.Part.Name}}</h1>
-<a class="pure-button" href={{print "/label?part=" .Part.Key}} download={{print .Part.Key ".dymo"}}>Download Label</a>
+<div>
+    <h1 class="pure-u-16-24">{{.Part.Name.String}}</h1>
+    <button class="pure-button pure-u-4-24">Edit Part</button>
+</div>
+<a class="pure-button" href={{print "/label?part=" .Part.Key.String}} download={{print .Part.Key.String ".dymo"}}>Download Label</a>
 {{end}}

@@ -1,28 +1,56 @@
 {{define "body"}}
 <h1>Parts List</h1>
-<table class="pure-table">
+<table class="pure-table" style="width:100%">
     <thead>
         <tr>
             <th>Part Name</th>
             <th>Container</th>
             <th>Location</th>
             <th></th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-    {{range $index, $element := .Parts}}
-        {{if IsEven $index}}
-        <tr class="pure-table-odd">
-        {{else}}
+        {{$index := 0}}
+        {{range $index, $element := .Parts}}
+        {{if isEven $index}}
         <tr>
+        {{else}}
+        <tr class="pure-table-odd">
         {{end}}
-            <td>{{$element.Name}}</td>
-            {{/* <td><a href={{$element.URL}}>{{$element.Name}}</a></td> */}}
-            <td>{{$element.Container}}</td>
-            <td>{{FormatPosition $element.Row $element.Column $element.Depth}}</td>
-            <td><a class="pure-button" href={{print "/label?part=" $element.Key}} download={{print $element.Key ".dymo"}}>Download Label</a></td>
+
+            <td><a href={{formatURL $element.Key.String}}>{{$element.Name.String}}</a></td>
+
+            {{if $element.Container.Valid}}
+            <td>{{$element.Container.String}}</td>
+            {{else}}
+            <td></td>
+            {{end}}
+
+            {{if and $element.Row.Valid $element.Column.Valid $element.Depth.Valid}}
+            <td>{{formatPosition $element.Row.Int32 $element.Column.Int32 $element.Depth.Int32}}</td>
+            {{else}}
+            <td></td>
+            {{end}}
+
+            <td><a class="pure-button pure-button-primary">Print Label</a></td>
+
+            <td><a class="pure-button" href={{print "/label?key=" $element.Key.String}} download={{print $element.Key.String ".dymo"}}>Download Label</a></td>
+
+            <td><a class="pure-button button-danger" href={{print "/archive?key=" $element.Key.String}}>Archive Part</a></td>
         </tr>
-    {{end}}
+        {{end}}
     </tbody>
 </table>
+
+<br/>
+<form class="pure-form" action="/newpart" method="get">
+    <fieldset>
+        <legend>New Part</legend>
+        <input name="key" type="text" placeholder="Key (url friendly)" />
+        <input name="name" type="text" placeholder="Part Name" />
+        <button type="submit" class="pure-button pure-button-primary">New Part</button>
+    </fieldset>
+</form>
 {{end}}
