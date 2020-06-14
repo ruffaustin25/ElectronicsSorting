@@ -1,16 +1,55 @@
 {{define "body"}}
 <form class="pure-form" action="/editpartsubmit" method="post">
     <fieldset>
+        <input name="key" type="hidden" value={{.Part.Key.String}} />
         <div>
-            <input name="key" type="hidden" value={{.Part.Key.String}} />
-            <input class="pure-u-18-24" name="name" type="text" value={{.Part.Name.String}} />
+            <div class="pure-u-18-24"></div>
             <button type="submit" class="pure-button pure-u-5-24">Submit Edits</button>
         </div>
+        <br>
         <div>
+            <label for="name" class="pure-u-4-24">Part Name</label>
+            <input class="pure-u-19-24" id="name" name="name" type="text" required value={{.Part.Name.String}}>
+        </div>
+        <br>
+        <div>
+            <label for="description" class="pure-u-4-24">Description (4096 chars max)</label>
+            <textarea class="pure-u-19-24" id="description" name="description" rows=4 maxlength=4096>{{.Part.Description.String}}</textarea>
+        </div>
+        <br>
+        <div>
+            <label for="container" class="pure-u-4-24">Container (3 chars max)</label>
             {{if .Part.Container.Valid}}
-            <input name="Container" type="text" value={{.Part.Container.String}} />
+            <input class="pure-u-19-24" id="container" name="container" type="text" value={{.Part.Container.String}}>
             {{else}}
-            <input name="Container" type="text" placeholder="Container (3 characters)" />
+            <input class="pure-u-19-24" id="container" name="container" type="text" placeholder="Container">
+            {{end}}
+        </div>
+        <br>
+        <div>
+            <label for="row" class="pure-u-4-24">row (int)</label>
+            {{if .Part.Row.Valid}}
+            <input class="pure-u-19-24" id="row" name="row" type="number" min=1 max=26 value={{.Part.Row.Int32}}>
+            {{else}}
+            <input class="pure-u-19-24" id="row" name="row" type="number" min=1 max=26 placeholder=1>
+            {{end}}
+        </div>
+        <br>
+        <div>
+            <label for="column" class="pure-u-4-24">column (int)</label>
+            {{if .Part.Row.Valid}}
+            <input class="pure-u-19-24" id="column" name="column" type="number" min=1 max=26 value={{.Part.Column.Int32}}>
+            {{else}}
+            <input class="pure-u-19-24" id="column" name="column" type="number" min=1 max=26 placeholder=1>
+            {{end}}
+        </div>
+        <br>
+        <div>
+            <label for="depth" class="pure-u-4-24">depth (int)</label>
+            {{if .Part.Depth.Valid}}
+            <input class="pure-u-19-24" id="depth" name="depth" type="number" min=1 max=26 value={{.Part.Depth.Int32}}>
+            {{else}}
+            <input class="pure-u-19-24" id="depth" name="depth" type="number" min=1 max=26 placeholder=1>
             {{end}}
         </div>
     </fieldset>

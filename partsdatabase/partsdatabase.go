@@ -3,6 +3,7 @@ package partsdatabase
 import (
 	"context"
 	"log"
+	"strconv"
 	"time"
 
 	"database/sql"
@@ -86,10 +87,7 @@ func (database PartsDatabase) CreatePart(key string, name string) {
 	ctx, stop := context.WithTimeout(context.Background(), time.Second)
 	defer stop()
 
-	rows, err := database.db.QueryContext(ctx, "INSERT INTO parts (`key`, `name`) VALUES ('"+key+"', '"+name+"')")
-	if rows != nil {
-		rows.Close()
-	}
+	_, err := database.db.ExecContext(ctx, "INSERT INTO parts (`key`, `name`) VALUES ('"+key+"', '"+name+"')")
 	if err != nil {
 		log.Fatalf("Error on create part, %s", err)
 	}
@@ -100,10 +98,7 @@ func (database PartsDatabase) ArchivePart(key string) {
 	ctx, stop := context.WithTimeout(context.Background(), time.Second)
 	defer stop()
 
-	rows, err := database.db.QueryContext(ctx, "DELETE FROM parts WHERE `key`='"+key+"'")
-	if rows != nil {
-		rows.Close()
-	}
+	_, err := database.db.ExecContext(ctx, "DELETE FROM parts WHERE `key`='"+key+"'")
 	if err != nil {
 		log.Fatalf("Error on create part, %s", err)
 	}
@@ -114,10 +109,28 @@ func (database PartsDatabase) UpdatePart(part *partdata.PartData) {
 	ctx, stop := context.WithTimeout(context.Background(), time.Second)
 	defer stop()
 
-	rows, err := database.db.QueryContext(ctx, "UPDATE parts SET `name`='"+part.Name.String+"' WHERE `key`='"+part.Key.String+"'")
-	if rows != nil {
-		rows.Close()
+	query := "UPDATE parts SET"
+	if part.Name.Valid {
+		query = query + " `name`='" + part.Name.String + "'"
 	}
+	if part.Description.Valid {
+		query = query + ", `description`='" + part.Description.String + "'"
+	}
+	if part.Container.Valid {
+		query = query + ", `container`='" + part.Container.String + "'"
+	}
+	if part.Row.Valid {
+		query = query + ", `row`=" + strconv.FormatInt(int64(part.Row.Int32), 10)
+	}
+	if part.Column.Valid {
+		query = query + ", `column`=" + strconv.FormatInt(int64(part.Column.Int32), 10)
+	}
+	if part.Depth.Valid {
+		query = query + ", `depth`=" + strconv.FormatInt(int64(part.Depth.Int32), 10)
+	}
+	query = query + " WHERE `key`='" + part.Key.String + "'"
+
+	_, err := database.db.ExecContext(ctx, query)
 	if err != nil {
 		log.Fatalf("Error on update part, %s", err)
 	}

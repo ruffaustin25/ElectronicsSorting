@@ -2,7 +2,6 @@ package partdata
 
 import (
 	"database/sql"
-	"log"
 	"strconv"
 
 	"github.com/ruffaustin25/ElectronicsSorting/buildconfig"
@@ -19,51 +18,58 @@ type PartData struct {
 	Depth       sql.NullInt32
 }
 
-// NewPartData : populates a part data based on a string slice
-func NewPartData(record []string) *PartData {
+// FromMap :
+func FromMap(record map[string]string) *PartData {
 	data := PartData{}
-	requiredFieldCount := 2 // Number of required serialized fields
-	if len(record) < requiredFieldCount {
-		log.Printf("Not enough fields in PartData record")
-	}
-	data.Key = sql.NullString{String: record[0], Valid: true}
-	data.Name = sql.NullString{String: record[1], Valid: true}
 
-	if len(record) < 3 {
-		return &data
+	key, found := record["key"]
+	if found {
+		data.Key = sql.NullString{String: key, Valid: true}
 	}
-	data.Container = sql.NullString{String: record[2], Valid: true}
 
-	if len(record) < 4 {
-		return &data
+	name, found := record["name"]
+	if found {
+		data.Name = sql.NullString{String: name, Valid: true}
 	}
-	rowNum, err := strconv.Atoi(record[3])
-	if err != nil {
-		rowNum = 0
-	}
-	data.Row = sql.NullInt32{Int32: int32(rowNum), Valid: true}
 
-	if len(record) < 5 {
-		return &data
+	description, found := record["description"]
+	if found {
+		data.Description = sql.NullString{String: description, Valid: true}
 	}
-	colNum, err := strconv.Atoi(record[4])
-	if err != nil {
-		colNum = 0
-	}
-	data.Column = sql.NullInt32{Int32: int32(colNum), Valid: true}
 
-	if len(record) < 6 {
-		return &data
+	container, found := record["container"]
+	if found {
+		data.Container = sql.NullString{String: container, Valid: true}
 	}
-	depthNum, err := strconv.Atoi(record[5])
-	if err != nil {
-		depthNum = 0
+
+	rowStr, found := record["row"]
+	if found {
+		row, err := strconv.Atoi(rowStr)
+		if err == nil {
+			data.Row = sql.NullInt32{Int32: int32(row), Valid: true}
+		}
 	}
-	data.Depth = sql.NullInt32{Int32: int32(depthNum), Valid: true}
+
+	colStr, found := record["column"]
+	if found {
+		column, err := strconv.Atoi(colStr)
+		if err == nil {
+			data.Column = sql.NullInt32{Int32: int32(column), Valid: true}
+		}
+	}
+
+	depthStr, found := record["depth"]
+	if found {
+		depth, err := strconv.Atoi(depthStr)
+		if err == nil {
+			data.Depth = sql.NullInt32{Int32: int32(depth), Valid: true}
+		}
+	}
 
 	return &data
 }
 
+// FromDatabaseRow :
 func FromDatabaseRow(rows *sql.Rows) *PartData {
 	data := PartData{}
 	err := rows.Scan(&data.Key, &data.Name, &data.Description, &data.Container, &data.Row, &data.Column, &data.Depth)
@@ -73,6 +79,7 @@ func FromDatabaseRow(rows *sql.Rows) *PartData {
 	return &data
 }
 
+// GetURL :
 func (data PartData) GetURL() string {
 	return buildconfig.BaseURL + "/part?part=" + data.Key.String
 }

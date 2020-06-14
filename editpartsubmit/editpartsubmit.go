@@ -33,17 +33,18 @@ func Show(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	key := req.FormValue(keyParam)
-	name := req.FormValue(nameParam)
-	description := req.FormValue(descriptionParam)
-	container := req.FormValue(containerParam)
-	rowStr := req.FormValue(rowParam)
-	columnStr := req.FormValue(columnParam)
-	depthStr := req.FormValue(depthParam)
+	params := make(map[string]string)
+	params["key"] = req.FormValue(keyParam)
+	params["name"] = req.FormValue(nameParam)
+	params["description"] = req.FormValue(descriptionParam)
+	params["container"] = req.FormValue(containerParam)
+	params["row"] = req.FormValue(rowParam)
+	params["column"] = req.FormValue(columnParam)
+	params["depth"] = req.FormValue(depthParam)
 
-	part := partdata.NewPartData([]string{key, name, description, container, rowStr, columnStr, depthStr})
+	part := partdata.FromMap(params)
 
 	database.UpdatePart(part)
 
-	http.Redirect(res, req, "/part?part="+key, http.StatusSeeOther)
+	http.Redirect(res, req, "/part?part="+params["key"], http.StatusSeeOther)
 }

@@ -3,5 +3,32 @@
     <h1 class="pure-u-18-24">{{.Part.Name.String}}</h1>
     <a class="pure-button pure-u-5-24" href={{print "/editpart?key=" .Part.Key.String}}>Edit Part</a>
 </div>
+<br>
+
+<p class="pure-u-23-24">
+    {{.Part.Description.String}}
+</p>
+<br>
+
+<div>
+    <label for="container" class="pure-u-4-24">Container:</label>
+    {{if .Part.Container.Valid}}
+    <div class="pure-u-19-24" id="container">{{.Part.Container.String}}</div>
+    {{else}}
+    <div class="pure-u-19-24" id="container">No container
+    {{end}}
+</div>
+<br>
+
+<div>
+    <label for="position" class="pure-u-4-24">Position:</label>
+    {{if and .Part.Row.Valid .Part.Column.Valid .Part.Depth.Valid}}
+    <div class="pure-u-19-24" id="position">{{formatPosition .Part.Row.Int32 .Part.Column.Int32 .Part.Depth.Int32}}</div>
+    {{else}}
+    <div class="pure-u-19-24" id="position">No position</div>
+    {{end}}
+</div>
+<br>
+
 <a class="pure-button" href={{print "/label?key=" .Part.Key.String}} download={{print .Part.Key.String ".dymo"}}>Download Label</a>
 {{end}}
