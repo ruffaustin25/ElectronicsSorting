@@ -10,6 +10,7 @@ import (
 
 	// Driver does not need import
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/ruffaustin25/ElectronicsSorting/buildconfig"
 	"github.com/ruffaustin25/ElectronicsSorting/partdata"
 )
 
@@ -27,7 +28,8 @@ func NewPartsDatabase() *PartsDatabase {
 	var err error
 	parts := PartsDatabase{}
 
-	parts.db, err = sql.Open("mysql", user+":"+password+"@/electronics")
+	DSN := user + ":" + password + "@tcp(" + buildconfig.DatabaseURL + ")/electronics"
+	parts.db, err = sql.Open("mysql", DSN)
 	if err != nil {
 		log.Fatalf("Could not init SQL Database, %s", err)
 	}
