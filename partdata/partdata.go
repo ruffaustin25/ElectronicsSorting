@@ -10,12 +10,13 @@ import (
 
 // PartData : template data describing a part
 type PartData struct {
-	Key       sql.NullString
-	Name      sql.NullString
-	Container sql.NullString
-	Row       sql.NullInt32
-	Column    sql.NullInt32
-	Depth     sql.NullInt32
+	Key         sql.NullString
+	Name        sql.NullString
+	Description sql.NullString
+	Container   sql.NullString
+	Row         sql.NullInt32
+	Column      sql.NullInt32
+	Depth       sql.NullInt32
 }
 
 // NewPartData : populates a part data based on a string slice
@@ -65,7 +66,7 @@ func NewPartData(record []string) *PartData {
 
 func FromDatabaseRow(rows *sql.Rows) *PartData {
 	data := PartData{}
-	err := rows.Scan(&data.Key, &data.Name, &data.Container, &data.Row, &data.Column, &data.Depth)
+	err := rows.Scan(&data.Key, &data.Name, &data.Description, &data.Container, &data.Row, &data.Column, &data.Depth)
 	if err != nil {
 		return nil
 	}

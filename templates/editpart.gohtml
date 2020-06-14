@@ -1,0 +1,18 @@
+{{define "body"}}
+<form class="pure-form" action="/editpartsubmit" method="post">
+    <fieldset>
+        <div>
+            <input name="key" type="hidden" value={{.Part.Key.String}} />
+            <input class="pure-u-18-24" name="name" type="text" value={{.Part.Name.String}} />
+            <button type="submit" class="pure-button pure-u-5-24">Submit Edits</button>
+        </div>
+        <div>
+            {{if .Part.Container.Valid}}
+            <input name="Container" type="text" value={{.Part.Container.String}} />
+            {{else}}
+            <input name="Container" type="text" placeholder="Container (3 characters)" />
+            {{end}}
+        </div>
+    </fieldset>
+</form>
+{{end}}

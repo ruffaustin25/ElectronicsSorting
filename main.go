@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/ruffaustin25/ElectronicsSorting/archive"
+	"github.com/ruffaustin25/ElectronicsSorting/editpart"
+	"github.com/ruffaustin25/ElectronicsSorting/editpartsubmit"
 	"github.com/ruffaustin25/ElectronicsSorting/index"
 	"github.com/ruffaustin25/ElectronicsSorting/label"
 	"github.com/ruffaustin25/ElectronicsSorting/list"
@@ -27,6 +29,8 @@ func main() {
 	label.Init(db)
 	newpart.Init(db)
 	archive.Init(db)
+	editpart.Init(layoutPath, db)
+	editpartsubmit.Init(db)
 
 	http.HandleFunc("/", index.Show)
 	http.HandleFunc("/list", list.Show)
@@ -34,6 +38,8 @@ func main() {
 	http.HandleFunc("/label", label.Download)
 	http.HandleFunc("/newpart", newpart.Show)
 	http.HandleFunc("/archive", archive.Show)
+	http.HandleFunc("/editpart", editpart.Show)
+	http.HandleFunc("/editpartsubmit", editpartsubmit.Show)
 	http.Handle("/static/", http.StripPrefix("/static", staticFS))
 
 	server := &http.Server{
