@@ -8,6 +8,7 @@ import (
 	"github.com/ruffaustin25/ElectronicsSorting/archive"
 	"github.com/ruffaustin25/ElectronicsSorting/editpart"
 	"github.com/ruffaustin25/ElectronicsSorting/editpartsubmit"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint"
 	"github.com/ruffaustin25/ElectronicsSorting/index"
 	"github.com/ruffaustin25/ElectronicsSorting/label"
 	"github.com/ruffaustin25/ElectronicsSorting/list"
@@ -23,23 +24,22 @@ func main() {
 
 	db := partsdatabase.NewPartsDatabase()
 
-	index.Init(layoutPath)
-	list.Init(layoutPath, db)
-	part.Init(layoutPath, db)
-	label.Init(db)
-	newpart.Init(db)
-	archive.Init(db)
-	editpart.Init(layoutPath, db)
-	editpartsubmit.Init(db)
+	endpoints := []endpoint.Endpoint{
+		index.Page{},
+		list.Page{},
+		part.Page{},
+		label.Page{},
+		newpart.Page{},
+		archive.Page{},
+		editpart.Page{},
+		editpartsubmit.Page{},
+	}
 
-	http.HandleFunc("/", index.Show)
-	http.HandleFunc("/list", list.Show)
-	http.HandleFunc("/part", part.Show)
-	http.HandleFunc("/label", label.Download)
-	http.HandleFunc("/newpart", newpart.Show)
-	http.HandleFunc("/archive", archive.Show)
-	http.HandleFunc("/editpart", editpart.Show)
-	http.HandleFunc("/editpartsubmit", editpartsubmit.Show)
+	for _, endpoint := range endpoints {
+		endpoint.Init(layoutPath, db)
+		http.HandleFunc(endpoint.Path(), endpoint.Navigate)
+	}
+
 	http.Handle("/static/", http.StripPrefix("/static", staticFS))
 
 	server := &http.Server{

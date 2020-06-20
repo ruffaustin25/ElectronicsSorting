@@ -11,32 +11,38 @@ import (
 	"github.com/ruffaustin25/ElectronicsSorting/templatefunctions"
 )
 
+type Page struct {
+	compiledTemplate *template.Template
+	database         *partsdatabase.PartsDatabase
+}
+
 type viewData struct {
 	Parts []partdata.PartData
 }
 
 const templatePath string = "./templates/list.gohtml"
 
-var compiledTemplate *template.Template
-var database *partsdatabase.PartsDatabase
+func (p Page) Path() string {
+	return "/list"
+}
 
 // Init : Load page template
-func Init(layoutPath string, db *partsdatabase.PartsDatabase) {
+func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 	var err error
 	layoutBase := filepath.Base(layoutPath)
-	compiledTemplate, err = template.New(layoutBase).Funcs(templatefunctions.GetHTMLFuncMap()).ParseFiles(layoutPath, templatePath)
+	p.compiledTemplate, err = template.New(layoutBase).Funcs(templatefunctions.GetHTMLFuncMap()).ParseFiles(layoutPath, templatePath)
 	if err != nil {
 		log.Fatalf("Could not load layout %s or template %s, %s", layoutPath, templatePath, err)
 	}
-	database = db
+	p.database = db
 }
 
-// Show : Present the page
-func Show(res http.ResponseWriter, req *http.Request) {
+// Navigate : Present the page
+func (p Page) Navigate(res http.ResponseWriter, req *http.Request) {
 	data := viewData{
-		Parts: database.GetPartsList(),
+		Parts: p.database.GetPartsList(),
 	}
-	err := compiledTemplate.Execute(res, data)
+	err := p.compiledTemplate.Execute(res, data)
 	if err != nil {
 		log.Fatalf("Could not execute template in list.go, Error %s", err.Error())
 	}

@@ -12,6 +12,11 @@ import (
 	"github.com/ruffaustin25/ElectronicsSorting/partsdatabase"
 )
 
+type Page struct {
+	compiledTemplate *template.Template
+	database         *partsdatabase.PartsDatabase
+}
+
 type viewData struct {
 	Part partdata.PartData
 }
@@ -19,22 +24,23 @@ type viewData struct {
 const templatePath string = "./label/labelTemplate.dymo"
 const keyParam string = "key"
 
-var compiledTemplate *template.Template
-var database *partsdatabase.PartsDatabase
+func (p Page) Path() string {
+	return "/label"
+}
 
 // Init : Load page template
-func Init(db *partsdatabase.PartsDatabase) {
+func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 	var err error
 	templateBase := filepath.Base(templatePath)
-	compiledTemplate, err = template.New(templateBase).Funcs(templatefunctions.GetTextFuncMap()).ParseFiles(templatePath)
+	p.compiledTemplate, err = template.New(templateBase).Funcs(templatefunctions.GetTextFuncMap()).ParseFiles(templatePath)
 	if err != nil {
 		log.Fatalf("Could not load template %s, Error: %s", templatePath, err.Error())
 	}
-	database = db
+	p.database = db
 }
 
 // Download : get the file
-func Download(res http.ResponseWriter, req *http.Request) {
+func (p Page) Navigate(res http.ResponseWriter, req *http.Request) {
 	params := req.URL.Query()
 
 	keys := params[keyParam]
@@ -43,7 +49,7 @@ func Download(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	part := database.GetPart(keys[0])
+	part := p.database.GetPart(keys[0])
 	if part == nil {
 		log.Printf("No part found for %s", keys[0])
 		return
@@ -52,7 +58,7 @@ func Download(res http.ResponseWriter, req *http.Request) {
 		Part: *part,
 	}
 
-	err := compiledTemplate.Execute(res, data)
+	err := p.compiledTemplate.Execute(res, data)
 	if err != nil {
 		log.Fatalf("Could not execute template in label.go, Error %s", err.Error())
 	}

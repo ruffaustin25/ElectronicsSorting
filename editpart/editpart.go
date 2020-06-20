@@ -9,6 +9,11 @@ import (
 	"github.com/ruffaustin25/ElectronicsSorting/partsdatabase"
 )
 
+type Page struct {
+	compiledTemplate *template.Template
+	database         *partsdatabase.PartsDatabase
+}
+
 type viewData struct {
 	Part partdata.PartData
 }
@@ -16,21 +21,22 @@ type viewData struct {
 const templatePath string = "./templates/editpart.gohtml"
 const keyParam string = "key"
 
-var compiledTemplate *template.Template
-var database *partsdatabase.PartsDatabase
+func (p Page) Path() string {
+	return "/editpart"
+}
 
 // Init : Load page template
-func Init(layoutPath string, db *partsdatabase.PartsDatabase) {
+func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 	var err error
-	compiledTemplate, err = template.ParseFiles(layoutPath, templatePath)
+	p.compiledTemplate, err = template.ParseFiles(layoutPath, templatePath)
 	if err != nil {
 		log.Fatalf("Could not load layout %s or template %s", layoutPath, templatePath)
 	}
-	database = db
+	p.database = db
 }
 
 // Show : Present the page
-func Show(res http.ResponseWriter, req *http.Request) {
+func (p Page) Navigate(res http.ResponseWriter, req *http.Request) {
 	params := req.URL.Query()
 
 	keys := params[keyParam]
@@ -39,7 +45,7 @@ func Show(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	part := database.GetPart(keys[0])
+	part := p.database.GetPart(keys[0])
 	if part == nil {
 		log.Printf("No part found for %s", keys[0])
 		return
@@ -47,5 +53,5 @@ func Show(res http.ResponseWriter, req *http.Request) {
 	data := viewData{
 		Part: *part,
 	}
-	compiledTemplate.Execute(res, data)
+	p.compiledTemplate.Execute(res, data)
 }

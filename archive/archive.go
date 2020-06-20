@@ -7,17 +7,23 @@ import (
 	"github.com/ruffaustin25/ElectronicsSorting/partsdatabase"
 )
 
+type Page struct {
+	database *partsdatabase.PartsDatabase
+}
+
 const keyParam string = "key"
 
-var database *partsdatabase.PartsDatabase
+func (p Page) Path() string {
+	return "/archive"
+}
 
 // Init : Load page template
-func Init(db *partsdatabase.PartsDatabase) {
-	database = db
+func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
+	p.database = db
 }
 
 // Show : Present the page
-func Show(res http.ResponseWriter, req *http.Request) {
+func (p Page) Navigate(res http.ResponseWriter, req *http.Request) {
 	params := req.URL.Query()
 
 	key := params[keyParam]
@@ -27,7 +33,7 @@ func Show(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	database.ArchivePart(key[0])
+	p.database.ArchivePart(key[0])
 
 	http.Redirect(res, req, "/list", http.StatusSeeOther)
 }

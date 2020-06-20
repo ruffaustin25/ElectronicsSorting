@@ -4,26 +4,34 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+
+	"github.com/ruffaustin25/ElectronicsSorting/partsdatabase"
 )
+
+type Page struct {
+	compiledTemplate *template.Template
+}
 
 type viewData struct {
 }
 
 const templatePath string = "./templates/index.gohtml"
 
-var compiledTemplate *template.Template
+func (p Page) Path() string {
+	return "/"
+}
 
 // Load page template
-func Init(layoutPath string) {
+func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 	var err error
-	compiledTemplate, err = template.ParseFiles(layoutPath, templatePath)
+	p.compiledTemplate, err = template.ParseFiles(layoutPath, templatePath)
 	if err != nil {
 		log.Fatalf("Could not load layout %s or template %s", layoutPath, templatePath)
 	}
 }
 
 // Present the page
-func Show(res http.ResponseWriter, req *http.Request) {
+func (p Page) Navigate(res http.ResponseWriter, req *http.Request) {
 	data := viewData{}
-	compiledTemplate.Execute(res, data)
+	p.compiledTemplate.Execute(res, data)
 }
