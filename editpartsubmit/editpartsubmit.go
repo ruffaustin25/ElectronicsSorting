@@ -20,17 +20,17 @@ const rowParam string = "row"
 const columnParam string = "column"
 const depthParam string = "depth"
 
-func (p Page) Path() string {
+func (p *Page) Path() string {
 	return "/editpartsubmit"
 }
 
 // Init : Load page template
-func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
+func (p *Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 	p.database = db
 }
 
 // Show : Present the page
-func (p Page) Navigate(res http.ResponseWriter, req *http.Request) {
+func (p *Page) Navigate(res http.ResponseWriter, req *http.Request) {
 	err := req.ParseForm()
 
 	if err != nil {

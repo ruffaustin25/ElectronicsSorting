@@ -25,14 +25,14 @@ func main() {
 	db := partsdatabase.NewPartsDatabase()
 
 	endpoints := []endpoint.Endpoint{
-		index.Page{},
-		list.Page{},
-		part.Page{},
-		label.Page{},
-		newpart.Page{},
-		archive.Page{},
-		editpart.Page{},
-		editpartsubmit.Page{},
+		&index.Page{},
+		&list.Page{},
+		&part.Page{},
+		&label.Page{},
+		&newpart.Page{},
+		&archive.Page{},
+		&editpart.Page{},
+		&editpartsubmit.Page{},
 	}
 
 	for _, endpoint := range endpoints {

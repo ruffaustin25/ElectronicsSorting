@@ -21,12 +21,12 @@ type viewData struct {
 const templatePath string = "./templates/editpart.gohtml"
 const keyParam string = "key"
 
-func (p Page) Path() string {
+func (p *Page) Path() string {
 	return "/editpart"
 }
 
 // Init : Load page template
-func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
+func (p *Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 	var err error
 	p.compiledTemplate, err = template.ParseFiles(layoutPath, templatePath)
 	if err != nil {
@@ -36,7 +36,7 @@ func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 }
 
 // Show : Present the page
-func (p Page) Navigate(res http.ResponseWriter, req *http.Request) {
+func (p *Page) Navigate(res http.ResponseWriter, req *http.Request) {
 	params := req.URL.Query()
 
 	keys := params[keyParam]

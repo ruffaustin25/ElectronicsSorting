@@ -23,12 +23,12 @@ type viewData struct {
 const templatePath string = "./templates/part.gohtml"
 const partParam string = "part"
 
-func (p Page) Path() string {
+func (p *Page) Path() string {
 	return "/part"
 }
 
 // Init : Load page template
-func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
+func (p *Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 	var err error
 	layoutBase := filepath.Base(layoutPath)
 	p.compiledTemplate, err = template.New(layoutBase).Funcs(templatefunctions.GetHTMLFuncMap()).ParseFiles(layoutPath, templatePath)
@@ -39,7 +39,7 @@ func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 }
 
 // Show : Present the page
-func (p Page) Navigate(res http.ResponseWriter, req *http.Request) {
+func (p *Page) Navigate(res http.ResponseWriter, req *http.Request) {
 	params := req.URL.Query()
 
 	partValue := params[partParam]

@@ -13,17 +13,17 @@ type Page struct {
 
 const keyParam string = "key"
 
-func (p Page) Path() string {
+func (p *Page) Path() string {
 	return "/archive"
 }
 
 // Init : Load page template
-func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
+func (p *Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 	p.database = db
 }
 
 // Show : Present the page
-func (p Page) Navigate(res http.ResponseWriter, req *http.Request) {
+func (p *Page) Navigate(res http.ResponseWriter, req *http.Request) {
 	params := req.URL.Query()
 
 	key := params[keyParam]

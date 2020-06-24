@@ -17,12 +17,12 @@ type viewData struct {
 
 const templatePath string = "./templates/index.gohtml"
 
-func (p Page) Path() string {
+func (p *Page) Path() string {
 	return "/"
 }
 
 // Load page template
-func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
+func (p *Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 	var err error
 	p.compiledTemplate, err = template.ParseFiles(layoutPath, templatePath)
 	if err != nil {
@@ -31,7 +31,7 @@ func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 }
 
 // Present the page
-func (p Page) Navigate(res http.ResponseWriter, req *http.Request) {
+func (p *Page) Navigate(res http.ResponseWriter, req *http.Request) {
 	data := viewData{}
 	p.compiledTemplate.Execute(res, data)
 }

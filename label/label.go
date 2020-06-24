@@ -24,12 +24,12 @@ type viewData struct {
 const templatePath string = "./label/labelTemplate.dymo"
 const keyParam string = "key"
 
-func (p Page) Path() string {
+func (p *Page) Path() string {
 	return "/label"
 }
 
 // Init : Load page template
-func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
+func (p *Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 	var err error
 	templateBase := filepath.Base(templatePath)
 	p.compiledTemplate, err = template.New(templateBase).Funcs(templatefunctions.GetTextFuncMap()).ParseFiles(templatePath)
@@ -40,7 +40,7 @@ func (p Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 }
 
 // Download : get the file
-func (p Page) Navigate(res http.ResponseWriter, req *http.Request) {
+func (p *Page) Navigate(res http.ResponseWriter, req *http.Request) {
 	params := req.URL.Query()
 
 	keys := params[keyParam]
