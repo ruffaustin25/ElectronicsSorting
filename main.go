@@ -9,6 +9,7 @@ import (
 	"github.com/ruffaustin25/ElectronicsSorting/editpart"
 	"github.com/ruffaustin25/ElectronicsSorting/editpartsubmit"
 	"github.com/ruffaustin25/ElectronicsSorting/endpoint"
+	"github.com/ruffaustin25/ElectronicsSorting/errorpage"
 	"github.com/ruffaustin25/ElectronicsSorting/index"
 	"github.com/ruffaustin25/ElectronicsSorting/label"
 	"github.com/ruffaustin25/ElectronicsSorting/list"
@@ -33,6 +34,7 @@ func main() {
 		&archive.Page{},
 		&editpart.Page{},
 		&editpartsubmit.Page{},
+		&errorpage.Page{},
 	}
 
 	for _, endpoint := range endpoints {

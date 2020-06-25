@@ -2,6 +2,7 @@ package partsdatabase
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"strconv"
 	"time"
@@ -85,14 +86,15 @@ func (database PartsDatabase) GetPart(key string) *partdata.PartData {
 }
 
 // CreatePart : Initializes a new part description
-func (database PartsDatabase) CreatePart(key string, name string) {
+func (database PartsDatabase) CreatePart(key string, name string) error {
 	ctx, stop := context.WithTimeout(context.Background(), time.Second)
 	defer stop()
 
 	_, err := database.db.ExecContext(ctx, "INSERT INTO parts (`key`, `name`) VALUES ('"+key+"', '"+name+"')")
 	if err != nil {
-		log.Fatalf("Error on create part, %s", err)
+		return fmt.Errorf("Error on create part, %s", err)
 	}
+	return nil
 }
 
 // ArchivePart : Drops a part from the parts table (TODO: move to an archived parts table to make parts recoverable)
