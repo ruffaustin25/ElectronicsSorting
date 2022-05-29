@@ -23,24 +23,43 @@ type PartsDatabase struct {
 const dbFilePath string = "./partsdatabase/parts.csv"
 const user string = "root"
 const password string = "root"
+const maxConnectRetries = 100
 
 // NewPartsDatabase :
 func NewPartsDatabase() *PartsDatabase {
 	var err error
+	retryCount := 0
 	parts := PartsDatabase{}
 
 	DSN := user + ":" + password + "@tcp(" + buildconfig.DatabaseURL + ")/electronics"
-	parts.db, err = sql.Open("mysql", DSN)
-	if err != nil {
-		log.Fatalf("Could not init SQL Database, %s", err)
+
+	for retryCount < maxConnectRetries {
+		parts.db, err = sql.Open("mysql", DSN)
+		if err != nil {
+			log.Printf("Could not init SQL Database, %s. Retrying in 10 seconds", err)
+			retryCount++
+			time.Sleep(10 * time.Second)
+			continue
+		}
+
+		ctx, stop := context.WithCancel(context.Background())
+		defer stop()
+
+		err = parts.db.PingContext(ctx)
+		if err != nil {
+			log.Printf("Could not ping SQL Database, %s. Retrying in 10 seconds", err)
+			retryCount++
+			time.Sleep(10 * time.Second)
+			continue
+		}
+
+		break
 	}
 
-	ctx, stop := context.WithCancel(context.Background())
-	defer stop()
-
-	err = parts.db.PingContext(ctx)
-	if err != nil {
-		log.Fatalf("Could not ping SQL Database, %s", err)
+	if retryCount >= maxConnectRetries {
+		log.Fatalf("Could not connect to SQL database after %d retries, stopping program", retryCount)
+	} else {
+		log.Printf("Successfully connected to SQL database!")
 	}
 
 	return &parts
