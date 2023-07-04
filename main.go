@@ -2,11 +2,12 @@ package main
 
 import (
 	"log"
+	"net"
 	"net/http"
-	"os"
 	"time"
 
-	"github.com/hashicorp/mdns"
+	"github.com/pion/mdns"
+	"golang.org/x/net/ipv4"
 
 	"github.com/ruffaustin25/ElectronicsSorting/archive"
 	"github.com/ruffaustin25/ElectronicsSorting/buildconfig"
@@ -55,14 +56,22 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	// Setup our service export
-	host, _ := os.Hostname()
-	info := []string{"My awesome service"}
-	service, _ := mdns.NewMDNSService(host, buildconfig.BaseURL, "", "", 8000, nil, info)
+	addr, err := net.ResolveUDPAddr("udp", mdns.DefaultAddress)
+	if err != nil {
+		panic(err)
+	}
 
-	// Create the mDNS server, defer shutdown
-	mdnsServer, _ := mdns.NewServer(&mdns.Config{Zone: service})
-	defer mdnsServer.Shutdown()
+	l, err := net.ListenUDP("udp4", addr)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = mdns.Server(ipv4.NewPacketConn(l), &mdns.Config{
+		LocalNames: []string{buildconfig.BaseURL},
+	})
+	if err != nil {
+		panic(err)
+	}
 
 	log.Fatal(server.ListenAndServe())
 }
