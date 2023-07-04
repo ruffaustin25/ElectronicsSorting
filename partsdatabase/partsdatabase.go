@@ -9,9 +9,7 @@ import (
 
 	"database/sql"
 
-	// Driver does not need import
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/ruffaustin25/ElectronicsSorting/buildconfig"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/ruffaustin25/ElectronicsSorting/partdata"
 )
 
@@ -31,10 +29,9 @@ func NewPartsDatabase() *PartsDatabase {
 	retryCount := 0
 	parts := PartsDatabase{}
 
-	DSN := user + ":" + password + "@tcp(" + buildconfig.DatabaseURL + ")/electronics"
-
 	for retryCount < maxConnectRetries {
-		parts.db, err = sql.Open("mysql", DSN)
+		parts.db, err = sql.Open("sqlite3", "./sqlite.db")
+
 		if err != nil {
 			log.Printf("Could not init SQL Database, %s. Retrying in 10 seconds", err)
 			retryCount++
@@ -54,6 +51,11 @@ func NewPartsDatabase() *PartsDatabase {
 		}
 
 		break
+	}
+
+	_, err = parts.db.Exec("CREATE TABLE IF NOT EXISTS parts (key CHAR(64), name CHAR(64), description VARCHAR(1024), container CHAR(32), row INT, column INT, depth INT, PRIMARY KEY (key))")
+	if err != nil {
+		log.Fatalf("Could not create default parts table, err: %s", err)
 	}
 
 	if retryCount >= maxConnectRetries {

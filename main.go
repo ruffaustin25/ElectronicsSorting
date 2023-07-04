@@ -3,9 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"time"
 
+	"github.com/hashicorp/mdns"
+
 	"github.com/ruffaustin25/ElectronicsSorting/archive"
+	"github.com/ruffaustin25/ElectronicsSorting/buildconfig"
 	"github.com/ruffaustin25/ElectronicsSorting/editpart"
 	"github.com/ruffaustin25/ElectronicsSorting/editpartsubmit"
 	"github.com/ruffaustin25/ElectronicsSorting/endpoint"
@@ -50,6 +54,15 @@ func main() {
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
+
+	// Setup our service export
+	host, _ := os.Hostname()
+	info := []string{"My awesome service"}
+	service, _ := mdns.NewMDNSService(host, buildconfig.BaseURL, "", "", 8000, nil, info)
+
+	// Create the mDNS server, defer shutdown
+	mdnsServer, _ := mdns.NewServer(&mdns.Config{Zone: service})
+	defer mdnsServer.Shutdown()
 
 	log.Fatal(server.ListenAndServe())
 }

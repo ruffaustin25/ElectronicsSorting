@@ -40,5 +40,5 @@ func formatPosition(row int32, column int32, depth int32) string {
 }
 
 func formatURL(key string) string {
-	return buildconfig.BaseURL + "/part?part=" + key
+	return "https://" + buildconfig.BaseURL + buildconfig.AppPort + "/part?part=" + key
 }

@@ -1,4 +1,4 @@
-FROM golang:1.14.2-buster
+FROM golang:1.19.10-bookworm
 
 WORKDIR /go/src/github.com/ruffaustin25/ElectronicsSorting
 COPY . .

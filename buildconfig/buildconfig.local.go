@@ -1,6 +1,6 @@
-// +build local
+//go:build local
 
 package buildconfig
 
-const DatabaseURL string = "localhost:3306"
-const BaseURL string = "http://localhost:2796"
+const BaseURL string = "localhost"
+const AppPort string = ":2796"

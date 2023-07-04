@@ -81,5 +81,5 @@ func FromDatabaseRow(rows *sql.Rows) *PartData {
 
 // GetURL :
 func (data PartData) GetURL() string {
-	return buildconfig.BaseURL + "/part?part=" + data.Key.String
+	return "https://" + buildconfig.BaseURL + buildconfig.AppPort + buildconfig.BaseURL + "/part?part=" + data.Key.String
 }
