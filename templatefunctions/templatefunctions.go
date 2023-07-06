@@ -13,6 +13,7 @@ import (
 func GetHTMLFuncMap() htmlTemplate.FuncMap {
 	funcMap := htmlTemplate.FuncMap{
 		"isEven":             isEven,
+		"add":                add,
 		"getRowLetter":       getRowLetter,
 		"getDepthLetter":     getDepthLetter,
 		"formatPosition":     formatPosition,
@@ -26,6 +27,7 @@ func GetHTMLFuncMap() htmlTemplate.FuncMap {
 func GetTextFuncMap() textTemplate.FuncMap {
 	funcMap := textTemplate.FuncMap{
 		"isEven":             isEven,
+		"add":                add,
 		"getRowLetter":       getRowLetter,
 		"getDepthLetter":     getDepthLetter,
 		"formatPosition":     formatPosition,
@@ -40,6 +42,10 @@ func isEven(i int) bool {
 		return true
 	}
 	return false
+}
+
+func add(a int, b int) int {
+	return a + b
 }
 
 func getRowLetter(row int) string {

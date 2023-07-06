@@ -28,7 +28,7 @@
                 {{$idx := 0}}
                 <th>Depth {{getDepthLetter $depthIdx}}</th>
                 {{range $idx, $elem := index $depth 0}}
-                    <th>{{$idx}}</th>
+                    <th>{{add $idx 1}}</th>
                 {{end}}
             </tr>
         </thead>
