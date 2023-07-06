@@ -128,14 +128,14 @@
           </Margin>
           <BarcodeFormat>QRCode</BarcodeFormat>
           <Data>
-            <DataString>{{formatURL .Part.Key.String}}</DataString>
+            <DataString>{{formatPartURL .Part.Key.String}}</DataString>
           </Data>
           <HorizontalAlignment>Center</HorizontalAlignment>
           <VerticalAlignment>Middle</VerticalAlignment>
           <Size>AutoFit</Size>
           <EQRCodeType>QRCodeText</EQRCodeType>
           <TextDataHolder>
-            <Value>{{formatURL .Part.Key.String}}</Value>
+            <Value>{{formatPartURL .Part.Key.String}}</Value>
           </TextDataHolder>
           <ObjectLayout>
             <DYMOPoint>

@@ -1,14 +1,12 @@
-package label
+package editpart
 
 import (
+	"html/template"
 	"log"
 	"net/http"
-	"path/filepath"
-	"text/template"
 
+	"github.com/ruffaustin25/ElectronicsSorting/containerdata"
 	"github.com/ruffaustin25/ElectronicsSorting/partdata"
-	"github.com/ruffaustin25/ElectronicsSorting/templatefunctions"
-
 	"github.com/ruffaustin25/ElectronicsSorting/partsdatabase"
 )
 
@@ -18,28 +16,28 @@ type Page struct {
 }
 
 type viewData struct {
-	Part partdata.PartData
+	Part       partdata.PartData
+	Containers []containerdata.ContainerData
 }
 
-const templatePath string = "./label/labelTemplate.dymo"
+const templatePath string = "./templates/editpart.gohtml"
 const keyParam string = "key"
 
 func (p *Page) Path() string {
-	return "/label"
+	return "/editpart"
 }
 
 // Init : Load page template
 func (p *Page) Init(layoutPath string, db *partsdatabase.PartsDatabase) {
 	var err error
-	templateBase := filepath.Base(templatePath)
-	p.compiledTemplate, err = template.New(templateBase).Funcs(templatefunctions.GetTextFuncMap()).ParseFiles(templatePath)
+	p.compiledTemplate, err = template.ParseFiles(layoutPath, templatePath)
 	if err != nil {
-		log.Fatalf("Could not load template %s, Error: %s", templatePath, err.Error())
+		log.Fatalf("Could not load layout %s or template %s", layoutPath, templatePath)
 	}
 	p.database = db
 }
 
-// Download : get the file
+// Show : Present the page
 func (p *Page) Navigate(res http.ResponseWriter, req *http.Request) {
 	params := req.URL.Query()
 
@@ -55,11 +53,8 @@ func (p *Page) Navigate(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	data := viewData{
-		Part: *part,
+		Part:       *part,
+		Containers: p.database.GetContainersList(),
 	}
-
-	err := p.compiledTemplate.Execute(res, data)
-	if err != nil {
-		log.Fatalf("Could not execute template in label.go, Error %s", err.Error())
-	}
+	p.compiledTemplate.Execute(res, data)
 }

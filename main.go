@@ -4,22 +4,28 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/pion/mdns"
 	"golang.org/x/net/ipv4"
 
-	"github.com/ruffaustin25/ElectronicsSorting/archive"
 	"github.com/ruffaustin25/ElectronicsSorting/buildconfig"
-	"github.com/ruffaustin25/ElectronicsSorting/editpart"
-	"github.com/ruffaustin25/ElectronicsSorting/editpartsubmit"
 	"github.com/ruffaustin25/ElectronicsSorting/endpoint"
-	"github.com/ruffaustin25/ElectronicsSorting/errorpage"
-	"github.com/ruffaustin25/ElectronicsSorting/index"
-	"github.com/ruffaustin25/ElectronicsSorting/label"
-	"github.com/ruffaustin25/ElectronicsSorting/list"
-	"github.com/ruffaustin25/ElectronicsSorting/newpart"
-	"github.com/ruffaustin25/ElectronicsSorting/part"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/archive"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/container"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/containers"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/editcontainer"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/editcontainersubmit"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/editpart"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/editpartsubmit"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/errorpage"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/index"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/label"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/list"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/newcontainer"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/newpart"
+	"github.com/ruffaustin25/ElectronicsSorting/endpoint/part"
 	"github.com/ruffaustin25/ElectronicsSorting/partsdatabase"
 )
 
@@ -39,6 +45,11 @@ func main() {
 		&archive.Page{},
 		&editpart.Page{},
 		&editpartsubmit.Page{},
+		&containers.Page{},
+		&container.Page{},
+		&newcontainer.Page{},
+		&editcontainer.Page{},
+		&editcontainersubmit.Page{},
 		&errorpage.Page{},
 	}
 
@@ -50,7 +61,7 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static", staticFS))
 
 	server := &http.Server{
-		Addr:           ":2796",
+		Addr:           ":" + strconv.Itoa(buildconfig.AppPort),
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,

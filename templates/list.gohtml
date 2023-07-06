@@ -20,7 +20,7 @@
         <tr class="pure-table-odd">
         {{end}}
 
-            <td><a href={{formatURL $element.Key.String}}>{{$element.Name.String}}</a></td>
+            <td><a href={{formatPartURL $element.Key.String}}>{{$element.Name.String}}</a></td>
 
             {{if $element.Container.Valid}}
             <td>{{$element.Container.String}}</td>

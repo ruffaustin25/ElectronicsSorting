@@ -1,0 +1,57 @@
+{{define "body"}}
+<div>
+    <h1 class="pure-u-18-24">{{.Container.Name.String}}</h1>
+    <a class="pure-button pure-u-5-24" href={{print "/editcontainer?key=" .Container.Key.String}}>Edit Container</a>
+</div>
+<br>
+
+<p class="pure-u-23-24">
+    {{.Container.Description.String}}
+</p>
+<br>
+
+<div>
+<label for="size" class="pure-u-4-24">Size:</label>
+    {{if and .Container.Height.Valid .Container.Width.Valid .Container.Depth.Valid}}
+    <div class="pure-u-19-24" id="size">{{print .Container.Height.Int32}}(h)x{{print .Container.Width.Int32}}(w)x{{print .Container.Depth.Int32}}(d)</div>
+    {{else}}
+    <div class="pure-u-19-24" id="size">No Size
+    {{end}}
+</div>
+
+{{$depthIdx := 0}}
+{{range $depthIdx, $depth := .Parts}}
+    <br>
+    <table class="pure-table" style="width:100%">
+        <thead>
+            <tr>
+                {{$idx := 0}}
+                <th>Depth {{getDepthLetter $depthIdx}}</th>
+                {{range $idx, $elem := index $depth 0}}
+                    <th>{{$idx}}</th>
+                {{end}}
+            </tr>
+        </thead>
+        <tbody>
+            {{$idx := 0}}
+            {{range $idx, $rows := $depth}} {{/* height, width */}}
+            <tr>
+                <th>
+                    {{getRowLetter $idx}}
+                </th>
+                {{range $part := $rows}}
+                <td>
+                    {{if eq $part nil}}
+                        NONE
+                    {{else}}
+                        <a href={{formatPartURL $part.Key.String}}>{{$part.Name.String}}</a>
+                    {{end}}
+                </td>    
+                {{end}}
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+{{end}}
+
+{{end}}

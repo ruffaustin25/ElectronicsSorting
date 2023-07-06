@@ -1,8 +1,9 @@
 package templatefunctions
 
 import (
-	htmlTemplate "html/template"
 	"strconv"
+
+	htmlTemplate "html/template"
 	textTemplate "text/template"
 
 	"github.com/ruffaustin25/ElectronicsSorting/buildconfig"
@@ -11,9 +12,12 @@ import (
 // GetHTMLFuncMap : get the library of common template functions
 func GetHTMLFuncMap() htmlTemplate.FuncMap {
 	funcMap := htmlTemplate.FuncMap{
-		"isEven":         isEven,
-		"formatPosition": formatPosition,
-		"formatURL":      formatURL,
+		"isEven":             isEven,
+		"getRowLetter":       getRowLetter,
+		"getDepthLetter":     getDepthLetter,
+		"formatPosition":     formatPosition,
+		"formatPartURL":      formatPartURL,
+		"formatContainerURL": formatContainerURL,
 	}
 	return funcMap
 }
@@ -21,9 +25,12 @@ func GetHTMLFuncMap() htmlTemplate.FuncMap {
 // GetTextFuncMap : get the library of common template functions
 func GetTextFuncMap() textTemplate.FuncMap {
 	funcMap := textTemplate.FuncMap{
-		"isEven":         isEven,
-		"formatPosition": formatPosition,
-		"formatURL":      formatURL,
+		"isEven":             isEven,
+		"getRowLetter":       getRowLetter,
+		"getDepthLetter":     getDepthLetter,
+		"formatPosition":     formatPosition,
+		"formatPartURL":      formatPartURL,
+		"formatContainerURL": formatContainerURL,
 	}
 	return funcMap
 }
@@ -35,10 +42,22 @@ func isEven(i int) bool {
 	return false
 }
 
-func formatPosition(row int32, column int32, depth int32) string {
-	return string('A'-1+row) + strconv.Itoa(int(column)) + string('a'-1+depth)
+func getRowLetter(row int) string {
+	return string('A' + row)
 }
 
-func formatURL(key string) string {
-	return "http://" + buildconfig.BaseURL + buildconfig.AppPort + "/part?part=" + key
+func getDepthLetter(depth int) string {
+	return string('a' + depth)
+}
+
+func formatPosition(row int32, column int32, depth int32) string {
+	return getRowLetter(int(row-1)) + strconv.Itoa(int(column)) + getDepthLetter(int(depth-1))
+}
+
+func formatPartURL(key string) string {
+	return "http://" + buildconfig.BaseURL + ":" + strconv.Itoa(buildconfig.AppPort) + "/part?part=" + key
+}
+
+func formatContainerURL(key string) string {
+	return "http://" + buildconfig.BaseURL + ":" + strconv.Itoa(buildconfig.AppPort) + "/container?container=" + key
 }

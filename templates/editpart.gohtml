@@ -18,12 +18,18 @@
         </div>
         <br>
         <div>
-            <label for="container" class="pure-u-4-24">Container (3 chars max)</label>
-            {{if .Part.Container.Valid}}
-            <input class="pure-u-19-24" id="container" name="container" type="text" value={{.Part.Container.String}}>
-            {{else}}
-            <input class="pure-u-19-24" id="container" name="container" type="text" placeholder="Container">
+            <label for="container" class="pure-u-4-24">Container</label>
+            <select class="pure-u-19-24" id="container" name="container">
+            {{range $index, $element := .Containers}}
+                <option value={{$element.Key.String}}
+                    {{if $.Part.Container.Valid}}    
+                        {{if eq $.Part.Container.String $element.Key.String}} 
+                        selected
+                        {{end}}
+                    {{end}}
+                    >{{$element.Name.String}}</option>
             {{end}}
+            </select>
         </div>
         <br>
         <div>

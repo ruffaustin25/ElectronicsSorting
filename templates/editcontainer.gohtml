@@ -1,0 +1,48 @@
+{{define "body"}}
+<form class="pure-form" action="/editcontainersubmit" method="post">
+    <fieldset>
+        <input name="key" type="hidden" value={{.Container.Key.String}} />
+        <div>
+            <div class="pure-u-18-24"></div>
+            <button type="submit" class="pure-button pure-u-5-24">Submit Edits</button>
+        </div>
+        <br>
+        <div>
+            <label for="name" class="pure-u-4-24">Container Name</label>
+            <input class="pure-u-19-24" id="name" name="name" type="text" required value={{.Container.Name.String}}>
+        </div>
+        <br>
+        <div>
+            <label for="description" class="pure-u-4-24">Description (4096 chars max)</label>
+            <textarea class="pure-u-19-24" id="description" name="description" rows=4 maxlength=4096>{{.Container.Description.String}}</textarea>
+        </div>
+        <br>
+        <div>
+            <label for="height" class="pure-u-4-24">height (int)</label>
+            {{if .Container.Height.Valid}}
+            <input class="pure-u-19-24" id="height" name="height" type="number" min=1 max=26 value={{.Container.Height.Int32}}>
+            {{else}}
+            <input class="pure-u-19-24" id="height" name="height" type="number" min=1 max=26 placeholder=1>
+            {{end}}
+        </div>
+        <br>
+        <div>
+            <label for="width" class="pure-u-4-24">width (int)</label>
+            {{if .Container.Width.Valid}}
+            <input class="pure-u-19-24" id="width" name="width" type="number" min=1 max=26 value={{.Container.Width.Int32}}>
+            {{else}}
+            <input class="pure-u-19-24" id="width" name="width" type="number" min=1 max=26 placeholder=1>
+            {{end}}
+        </div>
+        <br>
+        <div>
+            <label for="depth" class="pure-u-4-24">depth (int)</label>
+            {{if .Container.Depth.Valid}}
+            <input class="pure-u-19-24" id="depth" name="depth" type="number" min=1 max=26 value={{.Container.Depth.Int32}}>
+            {{else}}
+            <input class="pure-u-19-24" id="depth" name="depth" type="number" min=1 max=26 placeholder=1>
+            {{end}}
+        </div>
+    </fieldset>
+</form>
+{{end}}

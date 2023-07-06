@@ -3,4 +3,4 @@
 package buildconfig
 
 const BaseURL string = "localhost"
-const AppPort string = ":2796"
+const AppPort int = 2796

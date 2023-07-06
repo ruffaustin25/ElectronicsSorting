@@ -1,0 +1,34 @@
+{{define "body"}}
+<h1>Containers List</h1>
+<table class="pure-table" style="width:100%">
+    <thead>
+        <tr>
+            <th>Container Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{$index := 0}}
+        {{range $index, $element := .Containers}}
+        {{if isEven $index}}
+        <tr>
+        {{else}}
+        <tr class="pure-table-odd">
+        {{end}}
+
+            <td><a href={{formatContainerURL $element.Key.String}}>{{$element.Name.String}}</a></td>
+
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+
+<br/>
+<form class="pure-form" action="/newcontainer" method="get">
+    <fieldset>
+        <legend>New Container</legend>
+        <input name="key" type="text" placeholder="Key (url friendly)" />
+        <input name="name" type="text" placeholder="Container Name" />
+        <button type="submit" class="pure-button pure-button-primary">New Container</button>
+    </fieldset>
+</form>
+{{end}}
